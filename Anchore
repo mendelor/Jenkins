@@ -10,11 +10,11 @@ Make sure docker-compose is installed
 // cd ~/aevolume
 // curl -O https://raw.githubusercontent.com/anchore/anchore-engine/master/scripts/docker-compose/docker-compose.yaml
 // vim ~/aevolume/config/config.yaml
-// docker-compose up -d      -- make sure there are 2 images (Anchore and postgress)
+// docker-compose up -d      -- make sure there are 2 containers are up and running  (two-containers-are-running.jpg)  anchore+postgres
 Install the jenkins anchore plugin    -- called Anchore Container Image scanner plugin
 Configure the Anchore plugin, Jenkins-> Manage Jenkins -> Configure System     (example shown in Jenkins-configuration-Anchore.jpg)
 Make sure the credentials set in Jenkins (Dokcer-hub-credentials.jpg)
-use jenkins "Pipeline test-pipe"
+use jenkins "Pipeline test-pipe" for that job
 
 
 pipeline {
