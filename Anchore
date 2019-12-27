@@ -1,0 +1,47 @@
+https://medium.com/faun/step-by-step-guide-to-integrate-opensource-container-security-scanner-anchore-engine-with-cicd-580da8db5dfc
+
+Make sure docker-compose is installed
+
+
+// mkdir -p ~/aevolume/config
+// mkdir -p ~/aevolume/db/
+// cd ~/aevolume/config
+// curl -O https://raw.githubusercontent.com/anchore/anchore-engine/master/scripts/docker-compose/config.yaml
+// cd ~/aevolume
+// curl -O https://raw.githubusercontent.com/anchore/anchore-engine/master/scripts/docker-compose/docker-compose.yaml
+// vim ~/aevolume/config/config.yaml
+// docker-compose up -d      -- make sure there are 2 images (Anchore and postgress)
+Install the jenkins anchore plugin    -- called Anchore Container Image scanner plugin
+Configure the Anchore plugin, Jenkins-> Manage Jenkins -> Configure System     (example shown in Jenkins-configuration-Anchore.jpg)
+Make sure the credentials set in Jenkins (Dokcer-hub-credentials.jpg)
+use jenkins "Pipeline test-pipe"
+
+
+pipeline {
+    agent any
+    stages {
+        stage('build') {
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
+                        def image = docker.build('mendelor/docker')
+                        image.push()
+                    }
+                }
+            }
+        }
+        stage('analyze') {
+            steps {
+                sh 'echo "docker.io/mendelor/docker `pwd`/Dockerfile" > anchore_images'
+                anchore name: 'anchore_images'
+            }
+        }
+        stage('teardown') {
+            steps {
+                sh'''
+                    for i in `cat anchore_images | awk '{print $1}'`;do docker rmi $i; done
+                '''
+            }
+        }
+    }
+}
