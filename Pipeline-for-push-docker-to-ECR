@@ -1,0 +1,38 @@
+Pipeline for build docker image, tag it, and push it to AWS ECR:
+1. first make sure that you install aws ecr + pipeline + aws steps:  https://stackoverflow.com/questions/51213835/jenkins-pipeline-s3-file-donwload
+2. then run the following pipeline
+3. create aws credentials with the id  --->  demo-ecr-credentials
+AKIAIT7ZXXQLA36KVQIQ
+rY3wXaLGP1SFmEIOanOeYXQHGAyqZqRImrRPfWlb
+
+
+
+
+pipeline {
+    agent any
+    environment {
+       REGION = 'us-east-2'
+       LOCATION = '026033341139.dkr.ecr.${REGION}.amazonaws.com/hello-world'
+
+    }
+       stages {
+         stage('build') {
+          steps {
+          sh 'docker build -t idontknow7 .'
+          sh "docker tag idontknow7 ${LOCATION}:idontknow7 "
+
+     } }
+         stage('push') {
+          steps {
+          withAWS(region:'us-east-2',credentials:'demo-ecr-credentials') {
+          sh "eval \$(aws ecr get-login --no-include-email --region us-east-2)"
+          sh "docker push ${LOCATION}:idontknow7 "
+        }
+   }} }
+}
+
+
+Good sources for that kind of project:
+https://artem.services/?p=1032&lang=en    <<<<<<<<<<<<<<<
+https://stackoverflow.com/questions/51213835/jenkins-pipeline-s3-file-donwload
+
