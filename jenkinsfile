@@ -1,0 +1,11 @@
+pipeline {
+  agent any
+    stages {
+      stage('copy jar file') {
+          steps{
+            sh 'scp -i mykipi.pem ubuntu@3.129.44.157:/home/ubuntu/aaa.jar .'
+        
+      }
+    }
+  }
+}
